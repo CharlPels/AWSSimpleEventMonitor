@@ -29,19 +29,30 @@
     <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="AWSLambdaFunctions\EventLogs\lambda_function.py" />
+    <Compile Include="AWSLambdaFunctions\SNStopics\lambda_function.py" />
     <Compile Include="runserver.py" />
     <Compile Include="FlaskWebProject\__init__.py" />
     <Compile Include="FlaskWebProject\views.py" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="AWSLambdaFunctions\EventLogs\" />
+    <Folder Include="AWSLambdaFunctions\SNStopics\" />
     <Folder Include="FlaskWebProject\" />
     <Folder Include="FlaskWebProject\static\" />
     <Folder Include="FlaskWebProject\static\content\" />
     <Folder Include="FlaskWebProject\static\fonts\" />
     <Folder Include="FlaskWebProject\static\scripts\" />
     <Folder Include="FlaskWebProject\templates\" />
+    <Folder Include="AWSLambdaFunctions\" />
+    <Folder Include="AwsSimpleEventMonitorInstallation\" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="AWSLambdaFunctions\EventLogs\EventLogs.zip" />
+    <Content Include="AWSLambdaFunctions\SNStopics\lambda.zip" />
+    <Content Include="AwsSimpleEventMonitorInstallation\1.CreateDatabase.txt" />
+    <Content Include="AwsSimpleEventMonitorInstallation\2.CreateSqlTable.txt" />
+    <Content Include="AwsSimpleEventMonitorInstallation\3.configureAWSSimpleEventMonitor_Microsoft_Azure.jpg" />
     <Content Include="FlaskWebProject\templates\AWSmonitor.html" />
     <Content Include="FlaskWebProject\templates\layout-refresh.html" />
     <Content Include="FlaskWebProject\templates\layout.html" />

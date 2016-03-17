@@ -1,0 +1,31 @@
+
+--For azure Databases use command is not supported
+--So first connect to the new DB from step 1
+--then run this following commands
+
+/****** Object:  Table [dbo].[Events]    Script Date: 17-3-2016 20:50:27 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+SET ANSI_PADDING ON
+GO
+
+CREATE TABLE [dbo].[Events](
+	[id] [int] IDENTITY(1,1) NOT NULL,
+	[instanceid] [varchar](200) NOT NULL,
+	[servername] [varchar](100) NULL,
+	[logtime] [datetime] NULL,
+	[logsource] [varchar](100) NULL,
+	[severity] [varchar](100) NULL,
+	[Information] [varchar](5000) NULL,
+	[SubscribeURL] [varchar](5000) NULL,
+	[visible] [int] NULL
+)
+
+GO
+
+SET ANSI_PADDING OFF
+GO
