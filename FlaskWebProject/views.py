@@ -105,11 +105,7 @@ except:
 def home():
     """Renders the home page."""
     return redirect('/awslog')
-    return render_template(
-        'index.html',
-        title='Home Page',
-        year=datetime.now().year,
-    )
+
 
 @app.route('/contact')
 def contact():
