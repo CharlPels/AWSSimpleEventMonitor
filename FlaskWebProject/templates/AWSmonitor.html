@@ -1,0 +1,52 @@
+{% extends "layout-refresh.html" %}
+
+{% block content %}
+
+<h2>{{ title }}.</h2>
+<h3></h3>
+<p></p>
+<p></p>
+<p></p>
+
+
+
+<table style="width:100%">
+    <tr>
+        <td><p><b>InstanceID: </b>{{eventinstanceid}}</p></td>
+        <td><p><b>Server Name: </b>{{eventservername}}</p></td>
+    </tr>
+    <tr>
+        <td><p><b>Time: </b>{{eventlogtime}}</p></td>
+        <td><p><b>EventSource: </b>{{eventlogsource}}</p></td>
+    </tr>
+    <tr>
+        <td><a href="/awsitem/{{eventid}}">Mark as Solved</a></td>
+        <td><p><b>Event Severity: </b>{{eventseverity}}</p></td>
+    </tr>
+    <tr>
+        <td>
+            <p></p>
+            <p><b>EventInformation: </b></p>
+            <p>{{eventInformation}}</p>
+        </td>
+    </tr>
+</table>
+
+<p></p>
+<p></p>
+
+<hr />
+
+<p></p>
+<p></p>
+
+{{table}}
+
+<p></p>
+<p></p>
+<p></p>
+<p></p>
+
+
+
+    {% endblock %}
