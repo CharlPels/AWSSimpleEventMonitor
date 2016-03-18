@@ -45,7 +45,6 @@ class ItemTable(Table):
     logsource =  MoreSpace('logsource  ') 
     instanceid = MoreSpace('Instanceid  ') 
     servername = MoreSpace('Servername  ')
-    logtime = MoreSpace('logtime  ')
     severity = severity('severity  ')
     message = MoreSpace('Message  ')
 
@@ -123,7 +122,8 @@ def flask_link(id):
     element = str(id)
     connection = pypyodbc.connect(SQLconnectionString)
     cursor = connection.cursor() 
-    SQLCommand = ("UPDATE events SET visible = 0 where id = " + element)
+    #SQLCommand = ("UPDATE events SET visible = 0 where id = " + element)
+    SQLCommand = ("update events set visible = 0 where servername = (select servername from events where id = " + element + ") and information = (select information from events where id = " + element + ")")
     #SQLCommand = ("delete events where id = " + element)
     cursor.execute(SQLCommand)
     cursor.close()
@@ -150,7 +150,7 @@ def awslog(id=0):
     element = str(id)
     connection = pypyodbc.connect(SQLconnectionString)
     cursor = connection.cursor() 
-    SQLCommand = ("select replace(replace([instanceid],'arn:aws:sns:',''),'1d6dfeb2-c53a-447b-a156-64242c358a79','') as 'instanceid', replace(servername,'ace.nl.capgemini.com','') as servername, CONVERT(VARCHAR(20),logtime,113) as logtime,logsource, severity, Information as 'message', id from events where visible = 1 order by id desc")
+    SQLCommand = ("select replace(replace([instanceid],'arn:aws:sns:',''),'1d6dfeb2-c53a-447b-a156-64242c358a79','') as 'instanceid', replace(servername,'ace.nl.capgemini.com','') as servername,  logsource, severity, Information as 'message', min(id) as [ID] from events where visible = 1 group by [instanceid],[servername],[logsource],[severity],[Information],[SubscribeURL],[visible] order by id desc")
     #SQLCommand = ("select top 1 [instanceid], left([Information],20) as 'message', servername from events where id=1577")
     cursor.execute(SQLCommand) 
     #Drop all results in the items list
@@ -167,32 +167,23 @@ def awslog(id=0):
         eventlogsource=info[3]
         eventseverity=info[4]
         eventInformation=info[5]
-        eventid=info[6]
+        eventid=info[6]   
+        SQLCommand = ("select count(id) from events where servername = (select servername from events where id = " + element + ") and information = (select information from events where id =" + element +")")
+        cursor.execute(SQLCommand)
+        info=cursor.fetchone()
+        errorcount=info[0]
         cursor.close()
         connection.close()
     else:
-        try:
-            SQLCommand = ("select top 1 replace(replace([instanceid],'arn:aws:sns:',''),'1d6dfeb2-c53a-447b-a156-64242c358a79','') as 'instanceid', replace(servername,'ace.nl.capgemini.com','') as servername, CONVERT(VARCHAR(20),logtime,113) as logtime,logsource, severity, Information as 'message', id from events where visible = 1 order by id desc" )
-            cursor.execute(SQLCommand)
-            info=cursor.fetchone()
-            eventinstanceid=info[0]
-            eventservername=info[1]
-            eventlogtime=info[2]
-            eventlogsource=info[3]
-            eventseverity=info[4]
-            eventInformation=info[5]
-            eventid=info[6]
-            cursor.close()
-            connection.close()
-        except:
-            eventinstanceid=""
-            eventservername=""
-            eventlogtime=""
-            eventlogsource=""
-            eventseverity=""
-            eventInformation=""
-            eventid=""
-    """Renders the about page."""
+        eventinstanceid=""
+        eventservername=""
+        eventlogtime=""
+        eventlogsource=""
+        eventseverity=""
+        eventInformation=""
+        eventid=""
+        errorcount=""
+
     return render_template(
         'AWSmonitor.html',
         title='EventViewer',
@@ -204,7 +195,8 @@ def awslog(id=0):
         eventlogsource=eventlogsource,
         eventseverity=eventseverity,
         eventInformation=eventInformation,
-        eventid=eventid
+        eventid=eventid,
+        errorcount=errorcount
     )
 
 

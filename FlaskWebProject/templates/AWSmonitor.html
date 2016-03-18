@@ -9,7 +9,7 @@
 <p></p>
 
 
-
+{% if not errorcount == "" %}
 <table style="width:100%">
     <tr>
         <td><p><b>InstanceID: </b>{{eventinstanceid}}</p></td>
@@ -20,18 +20,22 @@
         <td><p><b>EventSource: </b>{{eventlogsource}}</p></td>
     </tr>
     <tr>
-        <td><a href="/awsitem/{{eventid}}">Mark as Solved</a></td>
+        <td><p><b>Event Count: </b>{{errorcount}}</p></td>
         <td><p><b>Event Severity: </b>{{eventseverity}}</p></td>
     </tr>
     <tr>
-        <td>
+        <td><a href="/awsitem/{{eventid}}">Mark as Solved</a></td>
+        <td></td>
+    </tr>
+    <tr>
+
             <p></p>
             <p><b>EventInformation: </b></p>
             <p>{{eventInformation}}</p>
-        </td>
+
     </tr>
 </table>
-
+{% endif %}
 <p></p>
 <p></p>
 
