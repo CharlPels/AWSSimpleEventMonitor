@@ -167,8 +167,9 @@ def awslog(id=0):
         eventlogsource=info[3]
         eventseverity=info[4]
         eventInformation=info[5]
-        eventid=info[6]   
-        SQLCommand = ("select count(id) from events where servername = (select servername from events where id = " + element + ") and information = (select information from events where id =" + element +")")
+        eventid=info[6]
+        #counter to show how many of the same event are reported   
+        SQLCommand = ("select count(id) from events where servername = (select servername from events where id = " + element + ") and information = (select information from events where visible = 1 and id =" + element +")")
         cursor.execute(SQLCommand)
         info=cursor.fetchone()
         errorcount=info[0]
