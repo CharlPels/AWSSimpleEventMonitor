@@ -207,17 +207,18 @@ def awslog(id=0):
 def lastevent():
         connection = pypyodbc.connect(SQLconnectionString)
         cursor = connection.cursor()
-        SQLCommand = ("select top 1 [instanceid],[servername],[severity],[Information] from [dbo].[Events] where visible = 1 order by id desc")
+        SQLCommand = ("select top 1 [id],[instanceid],[servername],[severity],[Information] from [dbo].[Events] where visible = 1 order by id desc")
         #Values = [instanceidresult,request.json.get('servername'),request.json.get('logsource'),severity,Informationresult,visible]
         cursor.execute(SQLCommand) 
         info=cursor.fetchone()
         connection.commit() 
         connection.close()
         logentry = {
-           'instanceid': info[0],
-           'servername': info[1],
-           'severity': info[2],
-           'Information': info[3]
+           'id': info[0],
+           'instanceid': info[1],
+           'servername': info[2],
+           'severity': info[3],
+           'Information': info[4]
         }
         return jsonify({'logentry': logentry}), 201
 
