@@ -201,8 +201,25 @@ def awslog(id=0):
     )
 
 
-
-
+#Used for our try tool and will precent a popup when a new event comes in
+@app.route('/api/v1.0/lastevent', methods=['GET'])
+@requires_auth
+def lastevent():
+        connection = pypyodbc.connect(SQLconnectionString)
+        cursor = connection.cursor()
+        SQLCommand = ("select top 1 [instanceid],[servername],[severity],[Information] from [dbo].[Events] where visible = 1 order by id desc")
+        #Values = [instanceidresult,request.json.get('servername'),request.json.get('logsource'),severity,Informationresult,visible]
+        cursor.execute(SQLCommand) 
+        info=cursor.fetchone()
+        connection.commit() 
+        connection.close()
+        logentry = {
+           'instanceid': info[0],
+           'servername': info[1],
+           'severity': info[2],
+           'Information': info[3]
+        }
+        return jsonify({'logentry': logentry}), 201
 
 @app.route('/api/v1.0/logs/insert', methods=['POST','GET'])
 def insert():
