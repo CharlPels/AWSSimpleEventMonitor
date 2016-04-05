@@ -209,17 +209,26 @@ def lastevent():
         cursor = connection.cursor()
         SQLCommand = ("select top 1 [id],[instanceid],[servername],[severity],[Information] from [dbo].[Events] where visible = 1 order by id desc")
         #Values = [instanceidresult,request.json.get('servername'),request.json.get('logsource'),severity,Informationresult,visible]
-        cursor.execute(SQLCommand) 
+        cursor.execute(SQLCommand)
         info=cursor.fetchone()
+        if info is not None:       
+            logentry = {
+              'id': info[0],
+              'instanceid': info[1],
+              'servername': info[2],
+              'severity': info[3],
+              'Information': info[4]
+           }
+        else:
+            logentry = {
+              'id': "",
+              'instanceid': "",
+              'servername': "",
+              'severity': "",
+              'Information': ""
+            }
         connection.commit() 
         connection.close()
-        logentry = {
-           'id': info[0],
-           'instanceid': info[1],
-           'servername': info[2],
-           'severity': info[3],
-           'Information': info[4]
-        }
         return jsonify({'logentry': logentry}), 201
 
 @app.route('/api/v1.0/logs/insert', methods=['POST','GET'])
