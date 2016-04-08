@@ -257,7 +257,7 @@ def insert():
     instanceid=request.json['instanceid']
     Information=request.json.get('Information')
     severity = request.json.get('severity')
-    EventPriority = "1"
+    EventPriority = 1
     EventPriority = request.json.get('Priority')
     try:
         #Section for handeling AWS SNS topics
