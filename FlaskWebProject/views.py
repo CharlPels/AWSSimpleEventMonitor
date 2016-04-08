@@ -165,7 +165,7 @@ def awslog(id=0):
     element = str(id)
     connection = pypyodbc.connect(SQLconnectionString)
     cursor = connection.cursor() 
-    SQLCommand = ("select priority, replace(replace([instanceid],'arn:aws:sns:',''),'1d6dfeb2-c53a-447b-a156-64242c358a79','') as 'instanceid', replace(servername,'ace.nl.capgemini.com','') as servername,  logsource, severity, Information as 'message', min(id) as [ID], convert(varchar, max([logtime]), 114) as lastevent from events where visible = 1 group by [priority],[instanceid],[servername],[logsource],[severity],[Information],[SubscribeURL],[visible] order by [priority] ,[id]")
+    SQLCommand = ("select priority, replace(replace([instanceid],'arn:aws:sns:',''),'1d6dfeb2-c53a-447b-a156-64242c358a79','') as 'instanceid', replace(servername,'ace.nl.capgemini.com','') as servername,  logsource, severity, Information as 'message', max(id) as [ID], convert(varchar, max([logtime]), 114) as lastevent from events where visible = 1 group by [priority],[instanceid],[servername],[logsource],[severity],[Information],[SubscribeURL],[visible] order by [priority], [ID]")
     #SQLCommand = ("select top 1 [instanceid], left([Information],20) as 'message', servername from events where id=1577")
     cursor.execute(SQLCommand) 
     #Drop all results in the items list
@@ -257,6 +257,7 @@ def insert():
     instanceid=request.json['instanceid']
     Information=request.json.get('Information')
     severity = request.json.get('severity')
+    Priotiry = request.json.get('Priotiry')
     try:
         #Section for handeling AWS SNS topics
         instanceidresult=instanceid
@@ -294,8 +295,8 @@ def insert():
     if visible == 1:
         connection = pypyodbc.connect(SQLconnectionString)
         cursor = connection.cursor()
-        SQLCommand = ("INSERT INTO events (instanceid, servername, logtime, logsource, severity, Information, visible) VALUES (?,?,(getdate()),?,?,?,?)")
-        Values = [instanceidresult,request.json.get('servername'),request.json.get('logsource'),severity,Informationresult,visible]
+        SQLCommand = ("INSERT INTO events (instanceid, servername, logtime, logsource, severity, Information, visible, Priotiry) VALUES (?,?,(getdate()),?,?,?,?,?)")
+        Values = [instanceidresult,request.json.get('servername'),request.json.get('logsource'),severity,Informationresult,visible,Priotiry]
         cursor.execute(SQLCommand,Values) 
         connection.commit() 
         connection.close()
