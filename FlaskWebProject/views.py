@@ -257,7 +257,8 @@ def insert():
     instanceid=request.json['instanceid']
     Information=request.json.get('Information')
     severity = request.json.get('severity')
-    Priotiry = request.json.get('Priotiry')
+    EventPriority = "1"
+    EventPriority = request.json.get('Priority')
     try:
         #Section for handeling AWS SNS topics
         instanceidresult=instanceid
@@ -290,13 +291,14 @@ def insert():
         'servername': request.json.get('servername', ""),
         'logsource': request.json.get('logsource', ""),
         'severity': request.json.get('severity', ""),
-        'Information': Informationresult
+        'Information': Informationresult,
+        'Priority': EventPriority
     }
     if visible == 1:
         connection = pypyodbc.connect(SQLconnectionString)
         cursor = connection.cursor()
-        SQLCommand = ("INSERT INTO events (instanceid, servername, logtime, logsource, severity, Information, visible, Priotiry) VALUES (?,?,(getdate()),?,?,?,?,?)")
-        Values = [instanceidresult,request.json.get('servername'),request.json.get('logsource'),severity,Informationresult,visible,Priotiry]
+        SQLCommand = ("INSERT INTO events (instanceid, servername, logtime, logsource, severity, Information, visible, Priority) VALUES (?,?,(getdate()),?,?,?,?,?)")
+        Values = [instanceidresult,request.json.get('servername'),request.json.get('logsource'),severity,Informationresult,visible,EventPriority]
         cursor.execute(SQLCommand,Values) 
         connection.commit() 
         connection.close()

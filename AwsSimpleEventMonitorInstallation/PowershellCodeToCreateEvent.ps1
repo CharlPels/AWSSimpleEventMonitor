@@ -6,6 +6,7 @@ $body = @{
     'servername'= "your instance or server name"
     'logsource'= "logsource"
     'severity'= "severity like error / worning / information"
+	'Priority'= 3
 }
 $monitorURL = "https://<<<-- your server url -->>>/api/v1.0/logs/insert"
 ConvertTo-Json $body
