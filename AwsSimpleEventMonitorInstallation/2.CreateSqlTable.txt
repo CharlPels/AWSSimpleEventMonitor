@@ -22,7 +22,8 @@ CREATE TABLE [dbo].[Events](
 	[severity] [varchar](100) NULL,
 	[Information] [varchar](5000) NULL,
 	[SubscribeURL] [varchar](5000) NULL,
-	[visible] [int] NULL
+	[visible] [int] NULL,
+	[priority] [int] NULL
 )
 
 GO

@@ -31,21 +31,36 @@ class severity(Col):
         elif content == 'Warning':
             return '<span style="color:#FFF801">' + content[:20] + "</SPAN>"
         else:
-            return '<span style="color:#0101DF">' + " | " + content[:20] + "</SPAN>"
+            return '<span style="color:#0101DF">' + content[:20] + "</SPAN>"
+
+class priority(Col):
+    def td_format(self, content):
+        if content == 1:
+            return '<span style="color:#FF0000">' + "  High" + "</SPAN>"
+        elif content == 2:
+            return '<span style="color:#FFF801">' + "  Medium" + "</SPAN>"
+        else:
+            return '<span style="color:#00FF00">' +  "  Low" + "</SPAN>"
 
 class MoreSpace(Col):
     def td_format(self, content):
-       return " | " + content[:30]
+       return "" + content[:30]
 
+class ShortTime(Col):
+    def td_format(self, content):
+       #We remove the seconds from the time
+       return "" + content[:-7]
 
 # Declare your table
 class ItemTable(Table):
     #solved = LinkCol('solved', 'flask_link', url_kwargs=dict(id='id'))
-    solved = LinkCol('More Info', 'awslog', url_kwargs=dict(id='id'))
-    logsource =  MoreSpace('logsource  ') 
+    moreinfo = LinkCol('MoreInfo', 'awslog', url_kwargs=dict(id='id'))
+    priority = priority(' Priority  ')
+    lastevent = ShortTime(' Lastevent  ')
+    logsource =  MoreSpace('Logsource  ') 
     instanceid = MoreSpace('Instanceid  ') 
     servername = MoreSpace('Servername  ')
-    severity = severity('severity  ')
+    severity = severity('Severity  ')
     message = MoreSpace('Message  ')
 
 
@@ -150,7 +165,7 @@ def awslog(id=0):
     element = str(id)
     connection = pypyodbc.connect(SQLconnectionString)
     cursor = connection.cursor() 
-    SQLCommand = ("select replace(replace([instanceid],'arn:aws:sns:',''),'1d6dfeb2-c53a-447b-a156-64242c358a79','') as 'instanceid', replace(servername,'ace.nl.capgemini.com','') as servername,  logsource, severity, Information as 'message', min(id) as [ID] from events where visible = 1 group by [instanceid],[servername],[logsource],[severity],[Information],[SubscribeURL],[visible] order by id desc")
+    SQLCommand = ("select priority, replace(replace([instanceid],'arn:aws:sns:',''),'1d6dfeb2-c53a-447b-a156-64242c358a79','') as 'instanceid', replace(servername,'ace.nl.capgemini.com','') as servername,  logsource, severity, Information as 'message', min(id) as [ID], convert(varchar, max([logtime]), 114) as lastevent from events where visible = 1 group by [priority],[instanceid],[servername],[logsource],[severity],[Information],[SubscribeURL],[visible] order by [priority] ,[id]")
     #SQLCommand = ("select top 1 [instanceid], left([Information],20) as 'message', servername from events where id=1577")
     cursor.execute(SQLCommand) 
     #Drop all results in the items list

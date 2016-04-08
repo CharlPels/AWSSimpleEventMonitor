@@ -2,8 +2,16 @@ import base64
 import gzip
 import json
 import requests
+import re
 
 from StringIO import StringIO
+
+def find_word(text, search):
+    result = re.findall('\\b'+search+'\\b', text, flags=re.IGNORECASE)
+    if len(result)>0:
+       return True
+    else:
+       return False
 
 def lambda_handler(event,context):
     decoded_data = event['awslogs']['data'].decode("base64")
@@ -53,6 +61,9 @@ def lambda_handler(event,context):
         if "[4673]" in (u["message"]): DoNotLog=1 #A privileged service was called	
         if "[4663]" in (u["message"]): DoNotLog=1 #An attempt was made to access an object.
 		
+        #in this code we just set a static value you can change to what ever you want based on your conditions
+        priority = 3
+
         #If DoNotLog is 0 meaning we should save the event we will upload it to our simple monitor
         if DoNotLog == 0:    
             data = {
@@ -60,7 +71,8 @@ def lambda_handler(event,context):
             'servername': servername,
             'logsource': "CloudwatchLog: " + logGroup,
             'severity': severity,
-            'Information': Information
+            'Information': Information,
+            'priority' : priority
             }
             print(data)
             headers = {'Content-Type': 'application/json'}
