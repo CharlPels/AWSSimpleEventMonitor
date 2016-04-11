@@ -174,22 +174,25 @@ def awslog(id=0):
     table = ItemTable(items)
     if not element == "0":
         SQLCommand = ("select replace(replace([instanceid],'arn:aws:sns:',''),'1d6dfeb2-c53a-447b-a156-64242c358a79','') as 'instanceid', replace(servername,'ace.nl.capgemini.com','') as servername, CONVERT(VARCHAR(20),logtime,113) as logtime,logsource, severity, Information as 'message', id from events where visible = 1 and id = " + element)
-        cursor.execute(SQLCommand)
-        info=cursor.fetchone()
-        eventinstanceid=info[0]
-        eventservername=info[1]
-        eventlogtime=info[2]
-        eventlogsource=info[3]
-        eventseverity=info[4]
-        eventInformation=info[5]
-        eventid=info[6]
-        #counter to show how many of the same event are reported   
-        SQLCommand = ("select count(id) from events where servername = (select servername from events where id = " + element + ") and information = (select information from events where visible = 1 and id =" + element +")")
-        cursor.execute(SQLCommand)
-        info=cursor.fetchone()
-        errorcount=info[0]
-        cursor.close()
-        connection.close()
+        try:
+            cursor.execute(SQLCommand)
+            info=cursor.fetchone()
+            eventinstanceid=info[0]
+            eventservername=info[1]
+            eventlogtime=info[2]
+            eventlogsource=info[3]
+            eventseverity=info[4]
+            eventInformation=info[5]
+            eventid=info[6]
+            #counter to show how many of the same event are reported   
+            SQLCommand = ("select count(id) from events where servername = (select servername from events where id = " + element + ") and information = (select information from events where visible = 1 and id =" + element +")")
+            cursor.execute(SQLCommand)
+            info=cursor.fetchone()
+            errorcount=info[0]
+        except:
+            return redirect('/awslog')
+            cursor.close()
+            connection.close()
     else:
         eventinstanceid=""
         eventservername=""
